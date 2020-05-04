@@ -1,4 +1,4 @@
-# MiniKube_Oracle12c
+# Running Oracle on Kubernets
 Running Oracle 12c in Kubernetes with Minikube and VirtualBox
 
 
