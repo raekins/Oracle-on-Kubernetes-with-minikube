@@ -1,4 +1,4 @@
-# Running an Oracle on Kubernets
+# Running Oracle on Kubernetes with MinKube
 Running an Oracle Database in Kubernetes with Minikube and VirtualBox
 
 
