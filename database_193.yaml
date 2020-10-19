@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oracle193
+  namespace: oracle-namespace
+  labels:
+    app: oracle19c
+    version: 19.3.0.0
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oracle19c
+      version: 19.3.0.0
+  template:
+    metadata:
+      name: oracle193
+      labels:
+        app: oracle19c
+        version: 19.3.0.0
+    spec:
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+      # add your volume mount for your persistent storage here
+      containers:
+      - name: database
+        command:
+        - /home/oracle/setup/dockerInit.sh
+        image: container-registry.oracle.com/database/enterprise:19.3.0.0
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            memory: 8Gi
+        ports:
+        - containerPort: 1521
+          hostPort: 1521
+        volumeMounts:
+          - mountPath: /dev/shm
+            name: dshm
+          # add your persistent storage for DB files here
+        env:
+          - name: ORACLE_SID
+            valueFrom:
+              configMapKeyRef:
+                name: oradb #Read from a configmap called oradb
+                key: ORACLE_SID #Read the key call DB_SID
+          - name: ORACLE_PDB
+            valueFrom:
+              configMapKeyRef:
+                name: oradb #Read from a configmap called oradb
+                key: ORACLE_PDB #Read the key call DB_PDB
+          - name: ORACLE_PWD
+            valueFrom:
+              configMapKeyRef:
+                name: oradb #Read from a configmap called oradb
+                key: ORACLE_PWD #Read the key call DB_PASSWD
+          - name: ORACLE_EDITION 
+            valueFrom:
+              configMapKeyRef:
+                name: oradb #Read from a configmap called oradb
+                key: ORALCE_EDITION #Read the key call DB_BUNDLE
+          - name: ORACLE_CHARACTERSET
+            valueFrom:
+              configMapKeyRef:
+                name: oradb #Read from a configmap called oradb
+                key: ORACLE_CHARACTERSET #Read the key call DB_MEMORY
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: oracle193
+  namespace: oracle-namespace
+spec:
+  selector:
+    app: oracle19c
+    version: 19.3.0.0
+  type: NodePort
+  ports:
+  - protocol: TCP
+    port: 1521
+    targetPort: 1521
