@@ -8,6 +8,6 @@ kubectl delete secret ocrsecret -n oracle-namespace
 Kubectl create secret docker-registry ocrsecret \
 --docker-server='container-registry.oracle.com' \
 --docker-username='ron@purestorage.com' \
---docker-password='Pure20!7' \
+--docker-password='******' \
 --docker-email='ron@purestorage.com' \
 -n oracle-namespace
